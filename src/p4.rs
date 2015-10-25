@@ -16,15 +16,16 @@ pub fn largest_palindrome_product(n: i16) -> i64 {
         min_str.push('0');
     }
     let min = min_str.parse::<i64>().unwrap();
+    let mut result = 0;
     for i in (min..max + 1).rev() {
-        for j in (min..i).rev() {
+        for j in (min..max + 1).rev() {
             let p = i * j;
-            if is_palindrome(p) {
-                return p;
+            if is_palindrome(p) && p > result {
+                result = p;
             }
         }
     }
-    panic!("unable to find a palindrome product of {} digit numbers", n);
+    return result;
 }
 
 pub fn is_palindrome(n: i64) -> bool {
@@ -42,7 +43,7 @@ pub fn is_palindrome(n: i64) -> bool {
 
 #[test]
 fn test_solve() {
-    assert_eq!(solve(), 580085);
+    assert_eq!(solve(), 906609);
 }
 
 #[test]
