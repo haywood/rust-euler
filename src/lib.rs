@@ -1,4 +1,4 @@
-#[deny(warnings)]
+#![deny(warnings)]
 
 pub mod p1;
 pub mod p2;
