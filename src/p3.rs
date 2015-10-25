@@ -3,7 +3,6 @@ pub fn solve() -> Option<i64> {
 }
 
 pub fn largest_prime_factor(n: i64) -> Option<i64> {
-    // TODO: performs pretty poorly timewise on the input from solve
     if n == 1 {
         return Some(1);
     } if n == 0 {
@@ -12,19 +11,19 @@ pub fn largest_prime_factor(n: i64) -> Option<i64> {
         return largest_prime_factor(-n);
     }
 
-    let limit = 1 + (n as f64).sqrt().ceil() as i64;
-    let mut primes = Vec::with_capacity(approx_primes_leq(limit) as usize);
-    for i in 2..limit {
+    let mut primes = Vec::new();
+    let mut p = n;
+    let mut i = 2;
+    while i < p {
         if is_prime(i, &primes) {
             primes.push(i);
+            while p != i && p % i == 0 {
+                p /= i;
+            }
         }
+        i += 1;
     }
-    for p in primes.iter().rev() {
-        if n % p == 0 {
-            return Some(p.clone());
-        }
-    }
-    return None;
+    return Some(p);
 }
 
 pub fn is_prime(n: i64, primes_less_than_n: &[i64]) -> bool {
@@ -36,11 +35,6 @@ pub fn is_prime(n: i64, primes_less_than_n: &[i64]) -> bool {
     return true;
 }
 
-pub fn approx_primes_leq(n: i64) -> f64 {
-    let x = n as f64;
-    return 1.25506 * x / x.ln()
-}
-
 #[test]
 fn test_solve() {
     assert_eq!(solve(), Some(6857));
@@ -48,5 +42,18 @@ fn test_solve() {
 
 #[test]
 fn test_largest_prime_factor() {
+    assert_eq!(largest_prime_factor(0), None);
+    assert_eq!(largest_prime_factor(1), Some(1));
+    assert_eq!(largest_prime_factor(2), Some(2));
+    assert_eq!(largest_prime_factor(3), Some(3));
+    assert_eq!(largest_prime_factor(4), Some(2));
+    assert_eq!(largest_prime_factor(5), Some(5));
+    assert_eq!(largest_prime_factor(6), Some(3));
+    assert_eq!(largest_prime_factor(7), Some(7));
+    assert_eq!(largest_prime_factor(8), Some(2));
+    assert_eq!(largest_prime_factor(9), Some(3));
+    assert_eq!(largest_prime_factor(10), Some(5));
+    assert_eq!(largest_prime_factor(11), Some(11));
     assert_eq!(largest_prime_factor(13195), Some(29));
+    assert_eq!(largest_prime_factor(-13195), Some(29));
 }
